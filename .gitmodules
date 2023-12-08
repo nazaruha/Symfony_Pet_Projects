@@ -1,0 +1,3 @@
+[submodule "1_my_first_symfony"]
+	path = 1_my_first_symfony
+	url = https://github.com/nazaruha/First_Symfony_Project.git
