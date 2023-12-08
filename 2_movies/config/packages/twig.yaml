@@ -1,5 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals: # Here you can create your own global variables
+        author: 'Nazarii Fedun'
 
 when@test:
     twig:
