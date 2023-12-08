@@ -13,10 +13,8 @@ class MoviesController extends AbstractController
     #[Route('/movies/{name}', name: 'movies', defaults: ['name' => null], methods: ['GET', 'HEAD'])]
     public function index($name) : Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/MoviesController.php',
-            'name' => "Movie name: $name"
+        return $this->render('movies/index.html.twig', [
+            'name' => $name
         ]);
     }
 }
