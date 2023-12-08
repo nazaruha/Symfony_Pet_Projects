@@ -6,4 +6,9 @@
 
 {% block body %}
     <h1>{{ name ? name: 'NoMovieName' }}</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie.name }} - {{ movie.producer }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
