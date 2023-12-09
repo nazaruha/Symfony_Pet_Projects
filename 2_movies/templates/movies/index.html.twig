@@ -5,13 +5,15 @@
 {% endblock %}
 
 {% block body %}
-    <p>{{ _self }}</p> {# outputs the current twig file #}
-    <p>{{ _charset }}</p> {# outputs what charset is being used #}
-    <p>{{ author }}</p> {# ouput our global variable that we created in the ~config/packages/twig.yaml #}
-    <h1>{{ name ? name: 'NoMovieName' }}</h1>
+{#    <p>{{ _self }}</p> #}{# outputs the current twig file #}
+{#    <p>{{ _charset }}</p> #}{# outputs what charset is being used #}
+{#    <p>{{ author }}</p> #}{# ouput our global variable that we created in the ~config/packages/twig.yaml #}
+    <p>Number of movies in the list: <b>{{ moviesCount }}</b></p>
+    <p>Number of movies which are found by the id <i>'{{ searchId }}'</i> :: <b>{{ moviesCountByProp }}</b></p>
+    <p>Movie Class Name: <b>{{ movieClass }}</b></p>
     <ul>
         {% for movie in movies %}
-            <li>{{ movie.name }} - {{ movie.producer }}</li>
+            <li>{{ movie.getId() }} | {{ movie.getTitle() }}</li>
         {% endfor %}
     </ul>
 {% endblock %}

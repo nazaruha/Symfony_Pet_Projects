@@ -111,4 +111,10 @@ class Movie
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        // TODO: Implement __toString() method.
+        return "Title: {$this->getTitle()} | Release year: {$this->getReleaseYear()} | Description: {$this->getDescription()}";
+    }
 }
