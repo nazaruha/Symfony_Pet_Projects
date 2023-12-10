@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block body %}
+    {# GLOBAL VARIABLES #}
 {#    <p>{{ _self }}</p> #}{# outputs the current twig file #}
 {#    <p>{{ _charset }}</p> #}{# outputs what charset is being used #}
 {#    <p>{{ author }}</p> #}{# ouput our global variable that we created in the ~config/packages/twig.yaml #}
+
+    
+    <h1 class="bg-blue-500 text-2xl text-center font-bold">Woohooo.</h1>
     <p>Number of movies in the list: <b>{{ moviesCount }}</b></p>
     <p>Number of movies which are found by the id <i>'{{ searchId }}'</i> :: <b>{{ moviesCountByProp }}</b></p>
     <p>Movie Class Name: <b>{{ movieClass }}</b></p>
