@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\Form\MovieFormType;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,27 +26,9 @@ class MoviesController extends AbstractController
     // defaults: ["name" => null] -> default value of the parameter "name" is null. I don't like this way, but I should know it
     // HEAD == GET, but is called when you pass a huge data
     // <\d+> -> regex expression for the prop 'id'
-    #[Route('/movies/{id<\d+>}', name: 'movies', methods: ['GET', 'HEAD'])]
+    #[Route('/movies', name: 'movies', methods: ['GET', 'HEAD'])]
     public function index(int $id = null) : Response
     {
-        // Get Movie By Id
-        if (isset($id))
-        {
-            $movie = $this->movieRepository->find($id); // SELECT * FROM movies WHERE id = 1;
-
-            if (isset($movie))
-            {
-                return $this->json([
-                    "message" => "Movie by id $id found",
-                    "movie" => strval($movie) // strval() -> converts to string
-                ]);
-            }
-            return $this->json([
-                "message" => "Movie by id $id not found",
-                "movie" => $movie
-            ]);
-        }
-
         // Get All Movies
         $movies = $this->movieRepository->findAll(); // SELECT * FROM movies
 
@@ -63,6 +48,63 @@ class MoviesController extends AbstractController
             'searchId' => $searchId,
             'moviesCountByProp' => $moviesCountByProp,
             'movieClass' => $movieClass
+        ]);
+    }
+
+    #[Route("movies/{id<\d+>}", name: 'movie-show', methods: ['GET'])]
+    public function show(int $id) : Response
+    {
+        $movie = $this->movieRepository->find($id); // SELECT * FROM movies WHERE id = 1;
+        if (!isset($movie))
+        {
+            return $this->json([
+                'message' => "Movie by id $id not found",
+                'success' => false
+            ]);
+        }
+        return $this->render('movies/show.html.twig', [
+            'movie' => $movie
+        ]);
+    }
+
+    #[Route("/movies/create", name: 'movie-create')]
+    public function create(Request $request) : Response
+    {
+        $movie = new Movie();
+        $form = $this->createForm(MovieFormType::class, $movie);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() /*POST or PUT req*/ && $form->isValid() /*fields validation*/)
+        {
+            $newMovie = $form->getData();
+
+            $imagePath = $form->get('imagePath'); // get the specific field
+            if ($imagePath)
+            {
+                $newFileName = uniqid() . '.' . $imagePath->guessExtension();
+
+                try {
+                    $imagePath->move(
+                        $this->getParameter('kernel,project_dir') . '/public/uploads', // path to save
+                        $newFileName // name of image
+                    );
+                }
+                catch(FileException $e)
+                {
+                    return new Response($e->getMessage());
+                }
+
+                $newMovie->setImagePath('/uploads/' . $newFileName);
+            }
+
+            $this->em->persist($newMovie);
+            $this->em->flush(); // post to db
+
+            return $this->redirectToRoute('movies'); // name of route
+        }
+
+        return $this->render('movies/create.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 

@@ -1,25 +1,74 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
 
-{% block title %}
-    Movies Page
-{% endblock %}
+{#{% block title %}#}
+{#    Movies Page#}
+{#{% endblock %}#}
+
+{#{% block body %}#}
+{#    #}{# GLOBAL VARIABLES #}
+{#    <p>{{ _self }}</p> #}{##}{# outputs the current twig file #}
+{#    <p>{{ _charset }}</p> #}{##}{# outputs what charset is being used #}
+{#    <p>{{ author }}</p> #}{##}{# ouput our global variable that we created in the ~config/packages/twig.yaml #}
+
+
+{#    #}{# RETRIVE DATA FROM ROUTE ACTION #}
+{#    <h1 class="bg-blue-500 text-2xl text-center font-bold">Woohooo.</h1>#}
+{#    <p>Number of movies in the list: <b>{{ moviesCount }}</b></p>#}
+{#    <p>Number of movies which are found by the id <i>'{{ searchId }}'</i> :: <b>{{ moviesCountByProp }}</b></p>#}
+{#    <p>Movie Class Name: <b>{{ movieClass }}</b></p>#}
+{#    <ul>#}
+{#        {% for movie in movies %}#}
+{#            <li>{{ movie.getId() }} | {{ movie.getTitle() }}</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+
+{#    #}{# RETRIEVE IMAGE #}
+{#    <img src="{{ asset('build/images/image1.31132d0c.jpg') }}" alt="">#}
+{#{% endblock %}#}
+
+{% extends "base.html.twig" %}
 
 {% block body %}
-    {# GLOBAL VARIABLES #}
-{#    <p>{{ _self }}</p> #}{# outputs the current twig file #}
-{#    <p>{{ _charset }}</p> #}{# outputs what charset is being used #}
-{#    <p>{{ author }}</p> #}{# ouput our global variable that we created in the ~config/packages/twig.yaml #}
+    <div class="w-4/5 m-auto text-center">
+        <div class="py-12 border-b border-gray-200">
+            <h1 class="text-6xl pt-12 pb-8">
+                Movies Review ({{ movies|length }}) {# Twig's method length  #}
+            </h1>
+        </div>
+    </div>
 
-    
-    <h1 class="bg-blue-500 text-2xl text-center font-bold">Woohooo.</h1>
-    <p>Number of movies in the list: <b>{{ moviesCount }}</b></p>
-    <p>Number of movies which are found by the id <i>'{{ searchId }}'</i> :: <b>{{ moviesCountByProp }}</b></p>
-    <p>Movie Class Name: <b>{{ movieClass }}</b></p>
-    <ul>
+    <div class="mx-auto w-4/5 my-8">
+        <a
+                {# /movies/create #}
+                href="{{ path('movie-create') }}"
+                class="uppercase border border-gray-500 text-lg py-4 px-6 rounded transition transition-all bg-gray-800 text-white hover:bg-white hover:text-gray-800">
+            Create New movie
+        </a>
+    </div>
+    <div class="md:grid lg:grid-cols-3 gap-20 w-4/5 mx-auto py-15 ">
+        <!-- Review Item -->
         {% for movie in movies %}
-            <li>{{ movie.getId() }} | {{ movie.getTitle() }}</li>
-        {% endfor %}
-    </ul>
+            <div class="text-center pt-8 pb-4">
+                <img
+                        src="{{ movie.imagePath }}"
+                        alt=""
+                        class="shadow-xl rounded-md"
+                />
 
-    <img src="{{ asset('build/images/image1.31132d0c.jpg') }}" alt="">
+                <h2 class="text-gray-700 font-bold text-3xl py-2">
+                    {{ movie.title }}
+                </h2>
+
+                <p class="text-base text-gray-700 pt-1 pb-10 leading-8 font-light">
+                    {{ movie.description }}
+                </p>
+
+                <a href="{{ path('movie-show', {
+                    id: movie.id
+                }) }}" class="uppercase border border-gray-500 text-gray-600 text-lg py-4 px-12 rounded transition transition-all hover:bg-gray-800 hover:text-white">
+                    Keep Reading
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
