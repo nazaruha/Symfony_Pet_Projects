@@ -78,14 +78,14 @@ class MoviesController extends AbstractController
         {
             $newMovie = $form->getData();
 
-            $imagePath = $form->get('imagePath'); // get the specific field
+            $imagePath = $form->get('imagePath')->getData(); // get the specific field
             if ($imagePath)
             {
                 $newFileName = uniqid() . '.' . $imagePath->guessExtension();
 
                 try {
                     $imagePath->move(
-                        $this->getParameter('kernel,project_dir') . '/public/uploads', // path to save
+                        $this->getParameter('kernel.project_dir') . '/public/uploads', // path to save
                         $newFileName // name of image
                     );
                 }
