@@ -154,7 +154,7 @@ class MoviesController extends AbstractController
                     }
                 }
             }
-            // This fields are not important it's already automatically done
+            // These fields are not important it's already automatically done
 //            $movie->setTitle($form->get('title')->getData());
 //            $movie->setReleaseYear($form->get('releaseYear')->getData());
 //            $movie->setDescription($form->get('description')->getData());
@@ -168,6 +168,29 @@ class MoviesController extends AbstractController
             'form' => $form->createView()
         ]);
 
+    }
+
+    #[Route('movies/delete/{id<\d+>}', name: 'movie-delete', methods: ['GET'/*strange but need get*/, "DELETE"])]
+    public function delete(int $id) : Response
+    {
+        $movie = $this->movieRepository->find($id);
+
+        if (!isset($movie)) {
+            return $this->json([
+                'message' => "Movie with id $id not found",
+                'success' => false
+            ]);
+        }
+
+        $imagePath = $this->getParameter('kernel.project_dir') . '\public' . $movie->getImagePath();
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
+        $this->em->remove($movie);
+        $this->em->flush();
+
+        return $this->redirectToRoute('movies');
     }
 
     // This Route is just for Example of another way to use Repositories. This is the Better one
