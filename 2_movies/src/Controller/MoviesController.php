@@ -81,7 +81,7 @@ class MoviesController extends AbstractController
             $imagePath = $form->get('imagePath')->getData(); // get the specific field
             if ($imagePath)
             {
-                $newFileName = uniqid() . '.' . $imagePath->guessExtension();
+                $newFileName = uniqid() . '.' . $imagePath->guessExtension(); // guessExtension() -> from symfony/mime package
 
                 try {
                     $imagePath->move(
@@ -106,6 +106,68 @@ class MoviesController extends AbstractController
         return $this->render('movies/create.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    #[Route("movies/edit/{id<\d+>}", name: "movie-edit")]
+    public function edit(int $id, Request $request) : Response
+    {
+        $movie = $this->movieRepository->find($id);
+        $form = $this->createForm(MovieFormType::class, $movie);
+
+        if (!isset($movie)) {
+            return $this->json([
+                'message' => "Movie by id $id not found",
+                'success' => false
+            ]);
+        }
+
+        $form->handleRequest($request);
+        $imagePath = $form->get('imagePath')->getData();
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            if ($imagePath)
+            {
+                // Handle image upload
+                if ($movie->getImagePath() !== null)
+                {
+                    if (file_exists(
+                        $this->getParameter('kernel.project_dir') . '\public' . $movie->getImagePath()
+                    ))
+                    {
+                     //   $this->getParameter('kernel.project_dir' . $movie->getImagePath());
+
+                        $newFileName = uniqid() . '.' . $imagePath->guessExtension();
+
+                        try {
+                            $imagePath->move(
+                                $this->getParameter('kernel.project_dir') . '/public/uploads',
+                                $newFileName
+                            );
+                        }
+                        catch(FileException $e)
+                        {
+                            return new Response($e->getMessage());
+                        }
+
+                        $movie->setImagePath('/uploads/' . $newFileName);
+                    }
+                }
+            }
+            // This fields are not important it's already automatically done
+//            $movie->setTitle($form->get('title')->getData());
+//            $movie->setReleaseYear($form->get('releaseYear')->getData());
+//            $movie->setDescription($form->get('description')->getData());
+            $this->em->flush();
+            return $this->redirectToRoute('movies');
+        }
+
+
+        return $this->render('movies/edit.html.twig', [
+            'movie' => $movie,
+            'form' => $form->createView()
+        ]);
+
     }
 
     // This Route is just for Example of another way to use Repositories. This is the Better one
