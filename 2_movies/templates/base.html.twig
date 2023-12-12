@@ -93,7 +93,7 @@
                     <li class="mr-3">
                         <a
                                 class="inline-block text-gray-300 no-underline hover:text-gray-200 hover:text-underline py-2 px-4"
-                                href="/movies"
+                                href="{{ path('movies') }}"
                                 @click="isOpen = false"
                         >Movies
                         </a>
@@ -105,6 +105,15 @@
                                 href="/contact"
                                 @click="isOpen = false">
                             Contact
+                        </a>
+                    </li>
+
+                    <li class="mr-3">
+                        <a
+                                class="inline-block text-gray-300 no-underline hover:text-gray-200 hover:text-underline py-2 px-4"
+                                href="/{{ app.user ? 'logout' : 'login' }}"
+                                @click="isOpen = false">
+                            {{ app.user ? 'Logout' : 'Login' }}
                         </a>
                     </li>
                 </ul>
