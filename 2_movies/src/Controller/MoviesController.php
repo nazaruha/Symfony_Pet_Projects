@@ -95,12 +95,12 @@ class MoviesController extends AbstractController
                 }
 
                 $newMovie->setImagePath('/uploads/' . $newFileName);
+
+                $this->em->persist($newMovie);
+                $this->em->flush(); // post to db
+
+                return $this->redirectToRoute('movies'); // name of route
             }
-
-            $this->em->persist($newMovie);
-            $this->em->flush(); // post to db
-
-            return $this->redirectToRoute('movies'); // name of route
         }
 
         return $this->render('movies/create.html.twig', [

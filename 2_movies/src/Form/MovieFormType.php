@@ -24,25 +24,28 @@ class MovieFormType extends AbstractType
                     'class' => 'bt-transparent block border-b-2 w-full h-20 text-6xl outline-none',
                     'placeholder' => 'Enter title...'
                 ),
-                'label' => false // removes the default label above the input
+                'label' => false, // removes the default label above the input
+                'required' => false
             ])
             ->add('releaseYear', IntegerType::class, [
                 'attr' => array(
                     'class' => 'bt-transparent block border-b-2 w-full h-20 text-6xl outline-none',
                     'placeholder' => 'Enter release year...'
                 ),
-                'label' => false
+                'label' => false,
+                'required' => false
             ])
             ->add('description', TextareaType::class, [
                 'attr' => array(
                     'class' => 'bt-transparent block border-b-2 w-full h-60 text-6xl outline-none',
                     'placeholder' => 'Enter description...'
                 ),
-                'label' => false
+                'label' => false,
+                'required' => false
             ])
             ->add('imagePath', FileType::class, array(
-                'required' => false,
                 'mapped' => false, // don't associate this field with entity properties
+                'required' => false,
             ))
 //            ->add('imagePath', FileType::class, [
 //                'attr' => array(
